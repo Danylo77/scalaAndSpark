@@ -1,20 +1,27 @@
 package com.company.reader
 
-import com.company.common.{PipelineStep, SparkData}
+import com.company.common.{PipelineData, PipelineStep}
 import com.company.config.CompanyConfig
-import org.apache.spark.sql.{Dataset, SparkSession}
 
 class CompanyReader(cf: CompanyConfig) extends PipelineStep {
 
-  override def process(sd: SparkData)(implicit spark: SparkSession): SparkData = {
-    import spark.implicits._
+  override def process(sd: PipelineData): PipelineData = {
 
-    val ds: Dataset[CompanyRow] = spark.read
-      .option("header", "true")
-      .option("inferSchema", "true")
-      .csv(cf.filepath)
-      .as[CompanyRow]
+    val source = scala.io.Source.fromFile(cf.filepath)
+    try {
+      val lines = source.getLines().toList
+      val dataLines = lines.tail
+      val companies: Seq[CompanyRow] = dataLines.map { line =>
+        val Array(name, revenueStr, employeesStr) = line.split(",").map(_.trim)
+        CompanyRow(name, revenueStr.toLong, employeesStr.toInt)
+      }
 
-    sd.add(CompanyRowTable, ds)
+      sd.add(CompanyRowTable, companies)
+    } catch {
+      case ex: Exception =>
+        throw new RuntimeException(s"Failed to read file ${cf.filepath}: ${ex.getMessage}", ex)
+    } finally {
+      source.close()
+    }
   }
 }
