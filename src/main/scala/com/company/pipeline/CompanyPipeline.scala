@@ -1,13 +1,12 @@
 package com.company.pipeline
 
-import com.company.common.SparkData
+import com.company.common.PipelineData
 import com.company.config.CompanyConfig
 import com.company.exporter.CompanyExporter
 import com.company.processor.CompanyProcessor
 import com.company.reader.CompanyReader
-import org.apache.spark.sql.SparkSession
 
-class CompanyPipeline(cf: CompanyConfig)(implicit spark: SparkSession) {
+class CompanyPipeline(cf: CompanyConfig) {
 
   private val steps = Seq(
     new CompanyReader(cf),
@@ -16,7 +15,7 @@ class CompanyPipeline(cf: CompanyConfig)(implicit spark: SparkSession) {
   )
 
   def run(): Unit = {
-    steps.foldLeft(SparkData()) { (sd, step) =>
+    steps.foldLeft(PipelineData()) { (sd, step) =>
       step.process(sd)
     }
   }
