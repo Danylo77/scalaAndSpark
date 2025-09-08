@@ -1,0 +1,41 @@
+### IntelliJ IDEA ###
+/.idea/
+/*.iml
+/shelf/
+/workspace.xml
+/httpRequests/
+/mavenHomeManager.xml
+/dataSources/
+/dataSources.local.xml
+
+### Scala / Java / Maven ###
+# Compiled class files
+*.class
+*.log
+
+# Package Files
+*.jar
+*.war
+*.nar
+*.ear
+*.zip
+*.tar.gz
+*.rar
+
+# Maven target dir
+/target/
+
+# Build output
+/out/
+
+### Spark / Hadoop temp data ###
+/metastore_db/
+/derby.log
+/*.crc
+/_spark_metadata/
+/_spark_checkpoint/
+/spark-warehouse/
+
+### OS files ###
+.DS_Store
+Thumbs.db
